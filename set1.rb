@@ -1,14 +1,5 @@
 require "base64"
-
-class String
-	def from_hex
-		[self].pack("H*")
-	end
-	def distance s2
-		throw "Unequal lengths" if self.length != s2.length
-		self.bytes.zip(s2.bytes).map{|a,b|(a^b).to_s(2).count("1")}.sum
-	end
-end
+require_relative "util"
 
 module Challenge1
 	INPUT = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
@@ -21,7 +12,7 @@ module Challenge2
 	INPUT2 = "686974207468652062756c6c277320657965"
 	OUTPUT = "746865206b696420646f6e277420706c6179"
 
-	puts "Matched" if (p INPUT1.from_hex.bytes.zip(INPUT2.from_hex.bytes).map {|a,b| a ^ b}.pack("C*")).unpack("H*").first == OUTPUT
+	puts "Matched" if (p INPUT1.from_hex ^ INPUT2.from_hex).unpack("H*").first == OUTPUT
 end
 
 module Challenge3
