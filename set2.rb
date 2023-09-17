@@ -10,3 +10,10 @@ module Challenge10
     KEY = "YELLOW SUBMARINE"
     p AES::decrypt_cbc(INPUT, KEY)
 end
+
+module Challenge11
+    5.times do
+        cipher = AES.encryption_oracle(0.chr * 64)
+        p cipher.detect_low_distance AES::BLOCKSIZE, 10
+    end
+end
