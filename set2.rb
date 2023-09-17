@@ -13,6 +13,6 @@ end
 
 module Challenge11
     5.times do
-        puts AES.cbc_ebc_detector &AES.method(:encryption_oracle)
+        puts cbc_ebc_detector &AES.method(:encryption_oracle)
     end
 end

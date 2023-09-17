@@ -98,10 +98,11 @@ module AES
         cipher.key = key
         cipher.update(plaintext.pad_to 16) + cipher.final
     end
-    # Return ebc if the function creates a ciphertext with identical blocks
-    # otherwise returns cbc
-    def self.cbc_ebc_detector
-        ciphertext = yield 0.chr * 1024
-        ciphertext.detect_low_distance(AES::BLOCKSIZE, 0).empty? ? "cbc" : "ebc"
-    end
+end
+
+# Return ebc if the function creates a ciphertext with identical blocks
+# otherwise returns cbc
+def cbc_ebc_detector
+    ciphertext = yield 0.chr * 1024
+    ciphertext.detect_low_distance(AES::BLOCKSIZE, 0).empty? ? "cbc" : "ebc"
 end
