@@ -19,6 +19,9 @@ end
 
 module AES
     require "openssl"
+    BLOCKSIZE = 16
+    IV = 0.chr * BLOCKSIZE # Unnecessary cause xorring this doesn't do much
+
     def self.encrypt_ebc plaintext, key
         cipher = OpenSSL::Cipher.new "aes-128-ecb"
         cipher.encrypt
@@ -31,5 +34,16 @@ module AES
         cipher.key = key
         cipher.padding = 0
         cipher.update(ciphertext) + cipher.final
+    end
+    def self.decrypt_cbc ciphertext, key
+        abort "Need to pad" if ciphertext.length % BLOCKSIZE != 0
+        blocks = ciphertext.chars.each_slice(BLOCKSIZE).map(&:join)
+        last = IV
+        plaintext = ""
+        blocks.each do |block|
+            plaintext << (AES::decrypt_ebc(block, key) ^ last)
+            last = block
+        end
+        plaintext
     end
 end
