@@ -91,13 +91,6 @@ module AES
             encrypt_cbc plaintext, key, iv=Random.bytes(BLOCKSIZE)
         end
     end
-    def self.openssl_encrypt_cbc plaintext, key
-        cipher = OpenSSL::Cipher.new "aes-128-cbc"
-        cipher.encrypt
-        cipher.iv = 0.chr * 16
-        cipher.key = key
-        cipher.update(plaintext.pad_to 16) + cipher.final
-    end
 end
 
 # Return ebc if the function creates a ciphertext with identical blocks
