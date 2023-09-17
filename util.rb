@@ -95,7 +95,7 @@ end
 
 # Return ebc if the function creates a ciphertext with identical blocks
 # otherwise returns cbc
-def cbc_ebc_detector
+def cbc_ebc_detector blocksize=AES::blocksize
     ciphertext = yield 0.chr * 1024
-    ciphertext.detect_low_distance(AES::BLOCKSIZE, 0).empty? ? "cbc" : "ebc"
+    ciphertext.detect_low_distance(blocksize, 0).empty? ? "cbc" : "ebc"
 end
