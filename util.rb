@@ -3,7 +3,7 @@ class String
 		[self].pack("H*")
 	end
 	def distance s2
-		throw "Unequal lengths" if self.length != s2.length
+		throw "Unequal lengths #{self.length} #{s2.length}" if self.length != s2.length
 		self.bytes.zip(s2.bytes).map{|a,b|(a^b).to_s(2).count("1")}.sum
 	end
 	def ^ key
@@ -95,7 +95,7 @@ end
 
 # Return ebc if the function creates a ciphertext with identical blocks
 # otherwise returns cbc
-def cbc_ebc_detector blocksize=AES::blocksize
+def cbc_ebc_detector blocksize=AES::BLOCKSIZE
     ciphertext = yield 0.chr * 1024
     ciphertext.detect_low_distance(blocksize, 0).empty? ? "cbc" : "ebc"
 end
