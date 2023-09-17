@@ -32,7 +32,7 @@ class String
             # Compare to blocks ahead
             for k in j+1..blocks.length-1
                 distance =  block.distance(blocks[k])
-                if distance < threshold
+                if distance <= threshold
                     results << [distance, j, k]
                 end
             end
@@ -75,7 +75,7 @@ module AES
         last = iv
         ciphertext = ""
         blocks.each do |block|
-            last = AES::encrypt_ebc(block, key) ^ last
+            last = AES::encrypt_ebc(block  ^ last, key)
             ciphertext << last
         end
         ciphertext
@@ -86,11 +86,22 @@ module AES
         plaintext = (Random.bytes(rand(5..10)) + plaintext + Random.bytes(rand(5..10))).pad_to BLOCKSIZE
         case rand().round
         when 1
-            puts "EBC"
             encrypt_ebc plaintext, key
         when 0
-            puts "CBC"
             encrypt_cbc plaintext, key, iv=Random.bytes(BLOCKSIZE)
         end
+    end
+    def self.openssl_encrypt_cbc plaintext, key
+        cipher = OpenSSL::Cipher.new "aes-128-cbc"
+        cipher.encrypt
+        cipher.iv = 0.chr * 16
+        cipher.key = key
+        cipher.update(plaintext.pad_to 16) + cipher.final
+    end
+    # Return ebc if the function creates a ciphertext with identical blocks
+    # otherwise returns cbc
+    def self.cbc_ebc_detector
+        ciphertext = yield 0.chr * 1024
+        ciphertext.detect_low_distance(AES::BLOCKSIZE, 0).empty? ? "cbc" : "ebc"
     end
 end

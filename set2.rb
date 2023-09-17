@@ -13,7 +13,6 @@ end
 
 module Challenge11
     5.times do
-        cipher = AES.encryption_oracle(0.chr * 64)
-        p cipher.detect_low_distance AES::BLOCKSIZE, 10
+        puts AES.cbc_ebc_detector &AES.method(:encryption_oracle)
     end
 end
